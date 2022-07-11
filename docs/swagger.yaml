@@ -1,0 +1,267 @@
+basePath: /api
+definitions:
+  models.File:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      is_public:
+        type: boolean
+      mime_type:
+        type: string
+      name:
+        type: string
+      owner:
+        $ref: '#/definitions/models.User'
+      owner_id:
+        type: integer
+      path:
+        maxLength: 255
+        type: string
+      size:
+        type: integer
+      updated_at:
+        type: string
+    required:
+    - id
+    - owner_id
+    - path
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        maxLength: 255
+        type: string
+      id:
+        type: integer
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+      phone:
+        type: string
+      photo:
+        $ref: '#/definitions/models.File'
+      photo_id:
+        type: integer
+      role:
+        $ref: '#/definitions/models.UserRole'
+      role_id:
+        type: integer
+      updated_at:
+        type: string
+      user_status:
+        type: integer
+    required:
+    - email
+    - id
+    - name
+    - role_id
+    - user_status
+    type: object
+  models.UserRole:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        maxLength: 31
+        type: string
+      updated_at:
+        type: string
+    required:
+    - id
+    - name
+    type: object
+info:
+  contact:
+    email: your@mail.com
+    name: API Support
+  description: This is an auto-generated API Docs.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Identity (email)
+        in: body
+        name: identity
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: Role ID
+        in: body
+        name: role
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: If login is successful returns JWT and user details.
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: If login credentials are correct, returns JWT.
+      tags:
+      - Auth
+  /api/v1/files/:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: File
+        in: body
+        name: file
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.File'
+      security:
+      - ApiKeyAuth: []
+      summary: Upload a file to server and return the details.
+      tags:
+      - File
+  /api/v1/users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Get list of all users.
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Name
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      - description: Email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Create a new user.
+      tags:
+      - User
+  /api/v1/users/{user_id}:
+    delete:
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete the user.
+      tags:
+      - User
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      security:
+      - ApiKeyAuth: []
+      summary: Get details of the current user.
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      security:
+      - ApiKeyAuth: []
+      summary: Update details of the current user.
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
