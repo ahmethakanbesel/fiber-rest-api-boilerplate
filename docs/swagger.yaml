@@ -145,6 +145,24 @@ paths:
       summary: Upload a file to server and return the details.
       tags:
       - File
+  /api/v1/files/{file_id}:
+    get:
+      parameters:
+      - description: File ID
+        in: path
+        name: file_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.File'
+      summary: Get details of the provided file.
+      tags:
+      - File
   /api/v1/users:
     get:
       produces:
