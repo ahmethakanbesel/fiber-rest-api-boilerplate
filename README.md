@@ -22,3 +22,5 @@ http://127.0.0.1:5000/dashboard
 ## Swagger
 ### Generating Docs
 Run `swag init` command to generate docs by automatically according to the code.
+
+![Swagger Docs Page](docs/swagger.png "Swagger Docs Page")
